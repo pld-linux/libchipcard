@@ -2,12 +2,13 @@ Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl):	Biblioteka ³atwego dostêpu do kart procesorowych
 Name:		libchipcard
 Version:	0.9.1
-Release:	1
+Release:	2
 License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libchipcard/%{name}-%{version}.tar.gz
 # Source0-md5:	9de5833b693a5221a046d4fe7efcc4c6
 Patch0:		%{name}-etc.patch
+Patch1:		%{name}-am18.patch
 URL:		http://www.libchipcard.de/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -76,7 +77,8 @@ lokalnych czytników kart.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
