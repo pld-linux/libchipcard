@@ -7,7 +7,11 @@ License:	LGPL
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libchipcard/%{name}-%{version}.tar.gz
 # Source0-md5:	9de5833b693a5221a046d4fe7efcc4c6
+Patch0:		%{name}-etc.patch
 URL:		http://www.libchipcard.de/
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -72,8 +76,13 @@ lokalnych czytników kart.
 
 %prep
 %setup -q
+%patch -p1
 
 %build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
 %configure \
 	--with-pid-dir=/var/run
 
@@ -88,6 +97,8 @@ install -d $RPM_BUILD_ROOT%{_initrddir}
 
 # TODO: PLDify
 install redhat/chipcardd $RPM_BUILD_ROOT%{_initrddir}
+install example/chipcardc.conf $RPM_BUILD_ROOT%{_sysconfdir}
+install example/chipcardd.conf $RPM_BUILD_ROOT%{_sysconfdir}
 
 rm -f doc/html/{Makefile*,pics/Makefile*}
 
@@ -110,7 +121,7 @@ fi
 %files
 %defattr(644,root,root,755)
 # COPYING contains only summary, note *GPL texts themselves
-%doc AUTHORS COPYING ChangeLog FAQ README* THANKS TODO example/chipcardc.conf
+%doc AUTHORS COPYING ChangeLog FAQ README* THANKS TODO
 %attr(755,root,root) %{_libdir}/libchipcard.so.*.*.*
 %dir %{_datadir}/libchipcard
 %dir %{_datadir}/libchipcard/commands
@@ -128,6 +139,7 @@ fi
 %{_datadir}/libchipcard/drivers/kobil.dsc
 %{_datadir}/libchipcard/drivers/towitoko.dsc
 %{_datadir}/libchipcard/drivers/orga.dsc
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/chipcardc.conf
 %{_mandir}/man5/libchipcard.conf.5*
 %{_mandir}/man5/chipcardc.conf.5*
 
@@ -150,7 +162,6 @@ fi
 
 %files tools -f %{name}.lang
 %defattr(644,root,root,755)
-%doc example/chipcardd.conf
 %attr(755,root,root) %{_bindir}/cardcommander
 %attr(755,root,root) %{_bindir}/ctfstool
 %attr(755,root,root) %{_bindir}/geldkarte
@@ -160,6 +171,7 @@ fi
 %attr(755,root,root) %{_sbindir}/chipcardd
 %attr(755,root,root) %{_sbindir}/kvkd
 %attr(754,root,root) /etc/rc.d/init.d/chipcardd
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/chipcardd.conf
 %{_mandir}/man1/ctfstool.1*
 %{_mandir}/man1/geldkarte.1*
 %{_mandir}/man1/hbcicard.1*
