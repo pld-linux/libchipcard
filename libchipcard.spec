@@ -1,4 +1,6 @@
+# Conditional build:
 %bcond_without	static_libs	# don't build static library
+#
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl):	Biblioteka ³atwego dostêpu do kart procesorowych
 Name:		libchipcard
