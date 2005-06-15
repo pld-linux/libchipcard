@@ -1,3 +1,4 @@
+%bcond_without	static_libs	# don't build static library
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl):	Biblioteka ³atwego dostêpu do kart procesorowych
 Name:		libchipcard
@@ -86,7 +87,8 @@ lokalnych czytników kart.
 %{__autoconf}
 %{__automake}
 %configure \
-	--with-pid-dir=/var/run
+	--with-pid-dir=/var/run \
+	%{!?with_static_libs:--disable-static}
 
 %{__make}
 
@@ -158,9 +160,11 @@ fi
 %{_aclocaldir}/libchipcard.m4
 %{_mandir}/man1/libchipcard-config.1*
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libchipcard.a
+%endif
 
 %files tools -f %{name}.lang
 %defattr(644,root,root,755)
