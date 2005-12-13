@@ -145,7 +145,7 @@ fi
 %{_datadir}/libchipcard/drivers/kobil.dsc
 %{_datadir}/libchipcard/drivers/towitoko.dsc
 %{_datadir}/libchipcard/drivers/orga.dsc
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/chipcardc.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcardc.conf
 %{_mandir}/man5/libchipcard.conf.5*
 %{_mandir}/man5/chipcardc.conf.5*
 
@@ -179,7 +179,7 @@ fi
 %attr(755,root,root) %{_sbindir}/chipcardd
 %attr(755,root,root) %{_sbindir}/kvkd
 %attr(754,root,root) /etc/rc.d/init.d/chipcardd
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/chipcardd.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcardd.conf
 %{_mandir}/man1/ctfstool.1*
 %{_mandir}/man1/geldkarte.1*
 %{_mandir}/man1/hbcicard.1*
