@@ -1,3 +1,6 @@
+# TODO
+# - choose one Summary(pl) for -tools
+#
 # Conditional build:
 %bcond_without	static_libs	# don't build static library
 #
@@ -62,11 +65,13 @@ Statyczna biblioteka LibChipCard.
 
 %package tools
 Summary:	Terminal tools and daemons for LibChipCard
-Summary(pl):	Narzêdzia terminalowe i demony dla LibChipCard
 Summary(pl):	Demon ChipCard i zwi±
+Summary(pl):	Narzêdzia terminalowe i demony dla LibChipCard
 License:	GPL
 Group:		Applications
+Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}
+Requires:	rc-scripts
 
 %description tools
 This package contains the terminal tools and daemons for LibChipCard.
