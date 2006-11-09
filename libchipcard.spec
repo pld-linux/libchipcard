@@ -41,7 +41,7 @@ testowana (z sukcesem) z czytnikami Towitoko, Kobil i Reiner-SCT.
 Summary:	Header files for LibChipCard
 Summary(pl):	Pliki nag³ówkowe LibChipCard
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 This package contains libchipcard-config and header files for writing
@@ -55,7 +55,7 @@ tworzenia programów u¿ywaj±cych LibChipCard.
 Summary:	Static LibChipCard library
 Summary(pl):	Statyczna biblioteka LibChipCard
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static LibChipCard library.
@@ -70,7 +70,7 @@ Summary(pl):	Narzêdzia terminalowe i demony dla LibChipCard
 License:	GPL
 Group:		Applications
 Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Requires:	rc-scripts
 
 %description tools
