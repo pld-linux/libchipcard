@@ -5,7 +5,7 @@
 %bcond_without	static_libs	# don't build static library
 #
 Summary:	A library for easy access to smart cards (chipcards)
-Summary(pl):	Biblioteka ³atwego dostêpu do kart procesorowych
+Summary(pl.UTF-8):   Biblioteka Å‚atwego dostÄ™pu do kart procesorowych
 Name:		libchipcard
 Version:	0.9.1
 Release:	2
@@ -29,17 +29,17 @@ German medical cards, German "Geldkarten" and HBCI (homebanking) cards
 interfaces and has successfully been tested with Towitoko, Kobil and
 Reiner-SCT readers.
 
-%description -l pl
-LibChipCard pozwala na ³atwy dostêp do czytników kart procesorowych.
-Daje podstawowy dostêp do kart pamiêciowych i procesorowych oraz ma
+%description -l pl.UTF-8
+LibChipCard pozwala na Å‚atwy dostÄ™p do czytnikÃ³w kart procesorowych.
+Daje podstawowy dostÄ™p do kart pamiÄ™ciowych i procesorowych oraz ma
 specjalne wsparcie dla niemieckich kart medycznych, niemieckich
-"Geldkarten" oraz kart HBCI (do homebankingu, typu 0 lub 1). Odwo³uje
-siê do czytników przez interfejs CTAPI lub PC/SC. Biblioteka by³a
+"Geldkarten" oraz kart HBCI (do homebankingu, typu 0 lub 1). OdwoÅ‚uje
+siÄ™ do czytnikÃ³w przez interfejs CTAPI lub PC/SC. Biblioteka byÅ‚a
 testowana (z sukcesem) z czytnikami Towitoko, Kobil i Reiner-SCT.
 
 %package devel
 Summary:	Header files for LibChipCard
-Summary(pl):	Pliki nag³ówkowe LibChipCard
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe LibChipCard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -47,26 +47,26 @@ Requires:	%{name} = %{version}-%{release}
 This package contains libchipcard-config and header files for writing
 programs using LibChipCard.
 
-%description devel -l pl
-Ten pakiet zawiera libchipcard-config oraz pliki nag³ówkowe do
-tworzenia programów u¿ywaj±cych LibChipCard.
+%description devel -l pl.UTF-8
+Ten pakiet zawiera libchipcard-config oraz pliki nagÅ‚Ã³wkowe do
+tworzenia programÃ³w uÅ¼ywajÄ…cych LibChipCard.
 
 %package static
 Summary:	Static LibChipCard library
-Summary(pl):	Statyczna biblioteka LibChipCard
+Summary(pl.UTF-8):   Statyczna biblioteka LibChipCard
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static LibChipCard library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka LibChipCard.
 
 %package tools
 Summary:	Terminal tools and daemons for LibChipCard
-Summary(pl):	Demon ChipCard i zwi±
-Summary(pl):	Narzêdzia terminalowe i demony dla LibChipCard
+Summary(pl.UTF-8):   Demon ChipCard i zwiÄ…
+Summary(pl.UTF-8):   NarzÄ™dzia terminalowe i demony dla LibChipCard
 License:	GPL
 Group:		Applications
 Requires(post,preun):	/sbin/chkconfig
@@ -78,10 +78,10 @@ This package contains the terminal tools and daemons for LibChipCard.
 The most important daemon here is chipcardd which is needed to access
 local card readers.
 
-%description tools -l pl
-Ten pakiet zawiera narzêdzia terminalowe oraz demony dla LibChipCard,
-w tym najwa¿niejszego demona, chipcardd, potrzebnego do dostêpu do
-lokalnych czytników kart.
+%description tools -l pl.UTF-8
+Ten pakiet zawiera narzÄ™dzia terminalowe oraz demony dla LibChipCard,
+w tym najwaÅ¼niejszego demona, chipcardd, potrzebnego do dostÄ™pu do
+lokalnych czytnikÃ³w kart.
 
 %prep
 %setup -q
