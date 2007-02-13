@@ -5,7 +5,7 @@
 %bcond_without	static_libs	# don't build static library
 #
 Summary:	A library for easy access to smart cards (chipcards)
-Summary(pl.UTF-8):   Biblioteka łatwego dostępu do kart procesorowych
+Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
 Version:	0.9.1
 Release:	2
@@ -39,7 +39,7 @@ testowana (z sukcesem) z czytnikami Towitoko, Kobil i Reiner-SCT.
 
 %package devel
 Summary:	Header files for LibChipCard
-Summary(pl.UTF-8):   Pliki nagłówkowe LibChipCard
+Summary(pl.UTF-8):	Pliki nagłówkowe LibChipCard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -53,7 +53,7 @@ tworzenia programów używających LibChipCard.
 
 %package static
 Summary:	Static LibChipCard library
-Summary(pl.UTF-8):   Statyczna biblioteka LibChipCard
+Summary(pl.UTF-8):	Statyczna biblioteka LibChipCard
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -65,8 +65,8 @@ Statyczna biblioteka LibChipCard.
 
 %package tools
 Summary:	Terminal tools and daemons for LibChipCard
-Summary(pl.UTF-8):   Demon ChipCard i zwią
-Summary(pl.UTF-8):   Narzędzia terminalowe i demony dla LibChipCard
+Summary(pl.UTF-8):	Demon ChipCard i zwią
+Summary(pl.UTF-8):	Narzędzia terminalowe i demony dla LibChipCard
 License:	GPL
 Group:		Applications
 Requires(post,preun):	/sbin/chkconfig
