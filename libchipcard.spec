@@ -1,47 +1,55 @@
-# TODO
-# - choose one Summary(pl) for -tools
+# TODO:
+# - PLDify init script
+# - revise split (e.g. which data should go to -tools)
 #
 # Conditional build:
-%bcond_without	static_libs	# don't build static library
+%bcond_without	sysfs	# don't use sysfs to scan for ttyUSB
 #
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	0.9.1
-Release:	2
-License:	LGPL
+Version:	4.0.0
+Release:	0.1
+License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libchipcard/%{name}-%{version}.tar.gz
-# Source0-md5:	9de5833b693a5221a046d4fe7efcc4c6
-Patch0:		%{name}-etc.patch
-Patch1:		%{name}-am18.patch
+# Source0-md5:	e58e17ca94c75979b8f4c7adf2eea863
+Patch0:		%{name}-visibility.patch
 URL:		http://www.libchipcard.de/
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
+BuildRequires:	gwenhywfar-devel >= 3.0.0
 BuildRequires:	libtool
+BuildRequires:	pcsc-lite-devel
+BuildRequires:	pkgconfig
+%{?with_sysfs:BuildRequires:	sysfsutils-devel >= 1.3.0-3}
+Obsoletes:	libchipcard-static
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-LibChipCard allows easy access to smart cards. It provides basic
+libchipcard allows easy access to smart cards. It provides basic
 access to memory and processor cards and has special support for
-German medical cards, German "Geldkarten" and HBCI (homebanking) cards
-(both type 0 and type 1). It accesses the readers via CTAPI or PC/SC
-interfaces and has successfully been tested with Towitoko, Kobil and
-Reiner-SCT readers.
+German medical cards, German "GeldKarte" and HBCI (homebanking) cards
+(both type 0 and type 1). It accesses the readers via CTAPI or IFD
+interfaces and has successfully been tested with Towitoko, Kobil, SCM,
+Orga, Omnikey and Reiner-SCT readers.
 
 %description -l pl.UTF-8
-LibChipCard pozwala na łatwy dostęp do czytników kart procesorowych.
-Daje podstawowy dostęp do kart pamięciowych i procesorowych oraz ma
-specjalne wsparcie dla niemieckich kart medycznych, niemieckich
-"Geldkarten" oraz kart HBCI (do homebankingu, typu 0 lub 1). Odwołuje
-się do czytników przez interfejs CTAPI lub PC/SC. Biblioteka była
-testowana (z sukcesem) z czytnikami Towitoko, Kobil i Reiner-SCT.
+libchipcard pozwala na łatwy dostęp do kart procesorowych. Daje
+podstawowy dostęp do kart pamięciowych i procesorowych, ma także
+specjalną obsługę niemieckich kart medycznych, niemieckich kart
+"GeldKarte" oraz kart HBCI (do homebankingu, zarówno typu 0 jak i 1).
+Z czytnikami komunikuje się poprzez interfejs CTAPI lub IFD, była
+testowana z czytnikami Towitoko, Kobil, SCM, Orga, Omnikey i
+Reiner-SCT. 
 
 %package devel
-Summary:	Header files for LibChipCard
-Summary(pl.UTF-8):	Pliki nagłówkowe LibChipCard
+Summary:	Header files for libchipcard
+Summary(pl.UTF-8):	Pliki nagłówkowe libchipcard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	gwenhywfar-devel >= 3.0.0
+%{?with_sysfs:Requires:	sysfsutils-devel >= 1.3.0-3}
 
 %description devel
 This package contains libchipcard-config and header files for writing
@@ -51,69 +59,51 @@ programs using LibChipCard.
 Ten pakiet zawiera libchipcard-config oraz pliki nagłówkowe do
 tworzenia programów używających LibChipCard.
 
-%package static
-Summary:	Static LibChipCard library
-Summary(pl.UTF-8):	Statyczna biblioteka LibChipCard
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static LibChipCard library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka LibChipCard.
-
 %package tools
-Summary:	Terminal tools and daemons for LibChipCard
-Summary(pl.UTF-8):	Demon ChipCard i zwią
-Summary(pl.UTF-8):	Narzędzia terminalowe i demony dla LibChipCard
-License:	GPL
+Summary:	Terminal tools and daemons for libchipcard
+Summary(pl.UTF-8):	Narzędzia terminalowe i demony dla libchipcard
 Group:		Applications
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}-%{release}
 Requires:	rc-scripts
 
 %description tools
-This package contains the terminal tools and daemons for LibChipCard.
+This package contains the terminal tools and daemons for libchipcard.
 The most important daemon here is chipcardd which is needed to access
 local card readers.
 
 %description tools -l pl.UTF-8
-Ten pakiet zawiera narzędzia terminalowe oraz demony dla LibChipCard,
+Ten pakiet zawiera narzędzia terminalowe oraz demony dla libchipcard,
 w tym najważniejszego demona, chipcardd, potrzebnego do dostępu do
 lokalnych czytników kart.
 
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure \
-	--with-pid-dir=/var/run \
-	%{!?with_static_libs:--disable-static}
+	%{!?with_sysfs:ac_cv_header_sysfs_libsysfs_h=no}
 
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_initrddir}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	initscriptdir=/etc/rc.d/init.d
 
-# TODO: PLDify
-install redhat/chipcardd $RPM_BUILD_ROOT%{_initrddir}
-install example/chipcardc.conf $RPM_BUILD_ROOT%{_sysconfdir}
-install example/chipcardd.conf $RPM_BUILD_ROOT%{_sysconfdir}
-
-rm -f doc/html/{Makefile*,pics/Makefile*}
-
-%find_lang %{name} --all-name
+rm -f $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/client/chipcardc.conf{.default,}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/client/chipcardc.conf.example
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/server/chipcardd.conf{.default,}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/server/chipcardd.conf.example
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -131,65 +121,59 @@ fi
 
 %files
 %defattr(644,root,root,755)
-# COPYING contains only summary, note *GPL texts themselves
-%doc AUTHORS COPYING ChangeLog FAQ README* THANKS TODO
-%attr(755,root,root) %{_libdir}/libchipcard.so.*.*.*
-%dir %{_datadir}/libchipcard
-%dir %{_datadir}/libchipcard/commands
-%{_datadir}/libchipcard/commands/ctcard.cmd
-%{_datadir}/libchipcard/commands/ctgeldkarte.cmd
-%{_datadir}/libchipcard/commands/ctkvkcard.cmd
-%{_datadir}/libchipcard/commands/ctmemorycard.cmd
-%{_datadir}/libchipcard/commands/ctprocessorcard.cmd
-%{_datadir}/libchipcard/commands/hbcicard.cmd
-%{_datadir}/libchipcard/commands/rsacard.cmd
-%dir %{_datadir}/libchipcard/drivers
-%{_datadir}/libchipcard/drivers/README
-%{_datadir}/libchipcard/drivers/ctapi-fake.dsc
-%{_datadir}/libchipcard/drivers/cyberjack.dsc
-%{_datadir}/libchipcard/drivers/kobil.dsc
-%{_datadir}/libchipcard/drivers/towitoko.dsc
-%{_datadir}/libchipcard/drivers/orga.dsc
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcardc.conf
-%{_mandir}/man5/libchipcard.conf.5*
-%{_mandir}/man5/chipcardc.conf.5*
+%doc AUTHORS ChangeLog NEWS README TODO doc/{CERTIFICATES,CONFIG,IPCCOMMANDS} etc/*.conf.*
+%attr(755,root,root) %{_libdir}/libchipcardc.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libchipcardc.so.2
+%attr(755,root,root) %{_libdir}/libchipcardd.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libchipcardd.so.0
+%attr(755,root,root) %{_libdir}/libchipcard_ctapi.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libchipcard_ctapi.so.0
+%dir %{_libdir}/chipcard
+%dir %{_libdir}/chipcard/server
+%dir %{_libdir}/chipcard/server/drivers
+%{_libdir}/chipcard/server/drivers/*.xml
+%attr(755,root,root) %{_libdir}/chipcard/server/drivers/SKEL1
+%attr(755,root,root) %{_libdir}/chipcard/server/drivers/ctapi
+%attr(755,root,root) %{_libdir}/chipcard/server/drivers/ifd
+%dir %{_libdir}/chipcard/server/lowlevel
+%dir %{_libdir}/chipcard/server/services
+%{_libdir}/chipcard/server/services/*.xml
+%attr(755,root,root) %{_libdir}/chipcard/server/services/kvks
+%attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/*.so*
+%{_libdir}/gwenhywfar/plugins/*/ct/*.xml
+%dir %{_datadir}/chipcard
+%dir %{_datadir}/chipcard/client
+%{_datadir}/chipcard/client/apps
+%{_datadir}/chipcard/client/cards
+%dir %{_datadir}/chipcard/server
+%{_datadir}/chipcard/server/drivers
+%dir %{_sysconfdir}/chipcard
+%dir %{_sysconfdir}/chipcard/client
+%dir %{_sysconfdir}/chipcard/client/certs
+# used by libchipcardc
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/client/chipcardc.conf
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/*.txt doc/html/*
-%attr(755,root,root) %{_bindir}/libchipcard-config
-%attr(755,root,root) %{_libdir}/libchipcard.so
-%{_libdir}/libchipcard.la
-%{_includedir}/chameleon
+%attr(755,root,root) %{_bindir}/chipcard-config
+%attr(755,root,root) %{_libdir}/libchipcardc.so
+%attr(755,root,root) %{_libdir}/libchipcardd.so
+%attr(755,root,root) %{_libdir}/libchipcard_ctapi.so
+%{_libdir}/libchipcardc.la
+%{_libdir}/libchipcardd.la
+%{_libdir}/libchipcard_ctapi.la
 %{_includedir}/chipcard
-%{_includedir}/chipcard.h
-%{_includedir}/ctversion.h
-%{_aclocaldir}/libchipcard.m4
-%{_mandir}/man1/libchipcard-config.1*
+%{_aclocaldir}/chipcard.m4
 
-%if %{with static_libs}
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libchipcard.a
-%endif
-
-%files tools -f %{name}.lang
+%files tools
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/cardcommander
-%attr(755,root,root) %{_bindir}/ctfstool
+%attr(755,root,root) %{_bindir}/chipcard-tool
 %attr(755,root,root) %{_bindir}/geldkarte
-%attr(755,root,root) %{_bindir}/hbcicard
+%attr(755,root,root) %{_bindir}/kvkcard
 %attr(755,root,root) %{_bindir}/memcard
-%attr(755,root,root) %{_bindir}/readertest
-%attr(755,root,root) %{_sbindir}/chipcardd
-%attr(755,root,root) %{_sbindir}/kvkd
+%attr(755,root,root) %{_sbindir}/chipcardd4
 %attr(754,root,root) /etc/rc.d/init.d/chipcardd
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcardd.conf
-%{_mandir}/man1/ctfstool.1*
-%{_mandir}/man1/geldkarte.1*
-%{_mandir}/man1/hbcicard.1*
-%{_mandir}/man1/chipcardd.1*
-%{_mandir}/man1/memcard.1*
-%{_mandir}/man1/kvkd.1*
-%{_mandir}/man1/readertest.1*
-%{_mandir}/man5/chipcardd.conf.5*
+%dir %{_sysconfdir}/chipcard/server
+%dir %{_sysconfdir}/chipcard/server/certs
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/server/chipcardd.conf
