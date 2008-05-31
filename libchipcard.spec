@@ -8,12 +8,12 @@
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	4.0.0
-Release:	0.2
+Version:	4.1.0
+Release:	0.1
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/libchipcard/%{name}-%{version}.tar.gz
-# Source0-md5:	e58e17ca94c75979b8f4c7adf2eea863
+Source0:	http://www.aquamaniac.de/sites/download/download.php?package=02&release=02&file=01&dummy=%{name}-%{version}.tar.gz
+# Source0-md5:	cd6226f232b362cae3b38627f2e24e82
 Patch0:		%{name}-visibility.patch
 URL:		http://www.libchipcard.de/
 BuildRequires:	autoconf >= 2.59
