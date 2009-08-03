@@ -4,25 +4,33 @@
 #
 # Conditional build:
 %bcond_without	sysfs	# don't use sysfs to scan for ttyUSB
+%bcond_without	hal	# don't use hal
 #
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	4.1.0
-Release:	0.1
+Version:	4.2.8
+Release:	1
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
-Source0:	http://www.aquamaniac.de/sites/download/download.php?package=02&release=02&file=01&dummy=%{name}-%{version}.tar.gz
-# Source0-md5:	cd6226f232b362cae3b38627f2e24e82
+# http://www2.aquamaniac.de/sites/download/packages.php
+Source0:	%{name}-%{version}.tar.gz
+# Source0-md5:	ec80fe54a23ff8fcf3017ed758bcaf77
 Patch0:		%{name}-visibility.patch
 URL:		http://www.libchipcard.de/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
-BuildRequires:	gwenhywfar-devel >= 3.0.0
+BuildRequires:	gwenhywfar-devel >= 3.5.0
 BuildRequires:	libtool
 BuildRequires:	pcsc-lite-devel
 BuildRequires:	pkgconfig
-%{?with_sysfs:BuildRequires:	sysfsutils-devel >= 1.3.0-3}
+%if %{with hal}
+BuildRequires:	hal-devel >= 0.5.0
+%else
+%if %{with sysfs}
+BuildRequires:	sysfsutils-devel >= 1.3.0-3
+%endif
+%endif
 Obsoletes:	libchipcard-static
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -49,7 +57,13 @@ Summary(pl.UTF-8):	Pliki nagłówkowe libchipcard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	gwenhywfar-devel >= 3.0.0
-%{?with_sysfs:Requires:	sysfsutils-devel >= 1.3.0-3}
+%if %{with hal}
+Requires:	hal-devel >= 0.5.0
+%else
+%if %{with sysfs}
+Requires:	sysfsutils-devel >= 1.3.0-3
+%endif
+%endif
 
 %description devel
 This package contains libchipcard-config and header files for writing
@@ -88,6 +102,7 @@ lokalnych czytników kart.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-static \
 	%{!?with_sysfs:ac_cv_header_sysfs_libsysfs_h=no}
 
 %{__make}
@@ -124,8 +139,6 @@ fi
 %doc AUTHORS ChangeLog NEWS README TODO doc/{CERTIFICATES,CONFIG,IPCCOMMANDS} etc/*.conf.*
 %attr(755,root,root) %{_libdir}/libchipcardc.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libchipcardc.so.2
-%attr(755,root,root) %{_libdir}/libchipcardd.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libchipcardd.so.0
 %attr(755,root,root) %{_libdir}/libchipcard_ctapi.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libchipcard_ctapi.so.0
 %dir %{_libdir}/chipcard
@@ -157,10 +170,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/chipcard-config
 %attr(755,root,root) %{_libdir}/libchipcardc.so
-%attr(755,root,root) %{_libdir}/libchipcardd.so
 %attr(755,root,root) %{_libdir}/libchipcard_ctapi.so
 %{_libdir}/libchipcardc.la
-%{_libdir}/libchipcardd.la
 %{_libdir}/libchipcard_ctapi.la
 %{_includedir}/chipcard
 %{_aclocaldir}/chipcard.m4
