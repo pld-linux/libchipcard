@@ -9,7 +9,7 @@ Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
 Version:	5.0.0
-Release:	2
+Release:	3
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 # http://www2.aquamaniac.de/sites/download/packages.php
@@ -125,14 +125,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
-
-%post tools
-/sbin/chkconfig --add chipcardd
-
-%preun tools
-if [ "$1" = "0" ]; then
-	/sbin/chkconfig --del chipcardd
-fi
 
 %files
 %defattr(644,root,root,755)
