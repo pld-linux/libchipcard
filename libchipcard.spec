@@ -1,5 +1,4 @@
 # TODO:
-# - PLDify init script
 # - revise split (e.g. which data should go to -tools)
 #
 # Conditional build:
@@ -10,7 +9,7 @@ Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
 Version:	5.0.0
-Release:	1
+Release:	2
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 # http://www2.aquamaniac.de/sites/download/packages.php
@@ -105,6 +104,7 @@ lokalnych czytników kart.
 %{__automake}
 %configure \
 	--disable-static \
+	--with-pcsc-libs=%{_libdir} \
 	%{!?with_sysfs:ac_cv_header_sysfs_libsysfs_h=no}
 
 %{__make}
