@@ -9,20 +9,21 @@
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	4.2.8
-Release:	2
+Version:	5.0.0
+Release:	1
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 # http://www2.aquamaniac.de/sites/download/packages.php
 Source0:	%{name}-%{version}.tar.gz
-# Source0-md5:	ec80fe54a23ff8fcf3017ed758bcaf77
+# Source0-md5:	9e1ae41016c894be30021a7e9b820680
 Patch0:		%{name}-visibility.patch
+Patch1:		%{name}-pcsc.patch
 URL:		http://www.libchipcard.de/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake
 BuildRequires:	gwenhywfar-devel >= 3.5.0
 BuildRequires:	libtool
-BuildRequires:	pcsc-lite-devel
+BuildRequires:	pcsc-lite-devel >= 1.6.2
 BuildRequires:	pkgconfig
 %if %{with hal}
 BuildRequires:	hal-devel >= 0.5.0
@@ -94,6 +95,7 @@ lokalnych czytników kart.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -115,10 +117,8 @@ rm -rf $RPM_BUILD_ROOT
 	initscriptdir=/etc/rc.d/init.d
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la
-mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/client/chipcardc.conf{.default,}
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/client/chipcardc.conf.example
-mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/server/chipcardd.conf{.default,}
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/server/chipcardd.conf.example
+mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf{.default,}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf.example
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -137,43 +137,30 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README TODO doc/{CERTIFICATES,CONFIG,IPCCOMMANDS} etc/*.conf.*
-%attr(755,root,root) %{_libdir}/libchipcardc.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libchipcardc.so.2
-%attr(755,root,root) %{_libdir}/libchipcard_ctapi.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libchipcard_ctapi.so.0
-%dir %{_libdir}/chipcard
-%dir %{_libdir}/chipcard/server
-%dir %{_libdir}/chipcard/server/drivers
-%{_libdir}/chipcard/server/drivers/*.xml
-%attr(755,root,root) %{_libdir}/chipcard/server/drivers/SKEL1
-%attr(755,root,root) %{_libdir}/chipcard/server/drivers/ctapi
-%attr(755,root,root) %{_libdir}/chipcard/server/drivers/ifd
-%dir %{_libdir}/chipcard/server/lowlevel
-%dir %{_libdir}/chipcard/server/services
-%{_libdir}/chipcard/server/services/*.xml
-%attr(755,root,root) %{_libdir}/chipcard/server/services/kvks
+%attr(755,root,root) %{_libdir}/libchipcard.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libchipcard.so.6
+%dir %{_datadir}/chipcard
+%dir %{_datadir}/chipcard/drivers
+%{_datadir}/chipcard/drivers/*.xml
+%dir %{_datadir}/chipcard/apps
+%dir %{_datadir}/chipcard/cards
+%{_datadir}/chipcard/apps/*.xml
+%{_datadir}/chipcard/cards/*.xml
+%dir %{_datadir}/chipcard/cards/cyberjack_pcsc
+%{_datadir}/chipcard/cards/cyberjack_pcsc/*.xml
+%dir %{_datadir}/chipcard/cards/generic_pcsc
+%{_datadir}/chipcard/cards/generic_pcsc/*.xml
 %attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/*.so*
 %{_libdir}/gwenhywfar/plugins/*/ct/*.xml
-%dir %{_datadir}/chipcard
-%dir %{_datadir}/chipcard/client
-%{_datadir}/chipcard/client/apps
-%{_datadir}/chipcard/client/cards
-%dir %{_datadir}/chipcard/server
-%{_datadir}/chipcard/server/drivers
-%dir %{_sysconfdir}/chipcard
-%dir %{_sysconfdir}/chipcard/client
-%dir %{_sysconfdir}/chipcard/client/certs
 # used by libchipcardc
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/client/chipcardc.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/chipcardc.conf
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/chipcard-config
-%attr(755,root,root) %{_libdir}/libchipcardc.so
-%attr(755,root,root) %{_libdir}/libchipcard_ctapi.so
-%{_libdir}/libchipcardc.la
-%{_libdir}/libchipcard_ctapi.la
-%{_includedir}/chipcard
+%attr(755,root,root) %{_libdir}/libchipcard.so
+%{_libdir}/libchipcard.la
+%{_includedir}/libchipcard5
 %{_aclocaldir}/chipcard.m4
 
 %files tools
@@ -183,8 +170,3 @@ fi
 %attr(755,root,root) %{_bindir}/geldkarte
 %attr(755,root,root) %{_bindir}/kvkcard
 %attr(755,root,root) %{_bindir}/memcard
-%attr(755,root,root) %{_sbindir}/chipcardd4
-%attr(754,root,root) /etc/rc.d/init.d/chipcardd
-%dir %{_sysconfdir}/chipcard/server
-%dir %{_sysconfdir}/chipcard/server/certs
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/server/chipcardd.conf
