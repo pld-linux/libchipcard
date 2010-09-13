@@ -9,7 +9,7 @@ Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
 Version:	5.0.0
-Release:	3
+Release:	4
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 # http://www2.aquamaniac.de/sites/download/packages.php
@@ -145,6 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/*.so*
 %{_libdir}/gwenhywfar/plugins/*/ct/*.xml
 # used by libchipcardc
+%dir %{_sysconfdir}/chipcard
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/chipcardc.conf
 
 %files devel
