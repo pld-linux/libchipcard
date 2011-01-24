@@ -24,6 +24,7 @@ BuildRequires:	gwenhywfar-devel >= 3.5.0
 BuildRequires:	libtool
 BuildRequires:	pcsc-lite-devel >= 1.6.2
 BuildRequires:	pkgconfig
+BuildRequires:	which
 %if %{with hal}
 BuildRequires:	hal-devel >= 0.5.0
 %else
@@ -49,7 +50,7 @@ specjalną obsługę niemieckich kart medycznych, niemieckich kart
 "GeldKarte" oraz kart HBCI (do homebankingu, zarówno typu 0 jak i 1).
 Z czytnikami komunikuje się poprzez interfejs CTAPI lub IFD, była
 testowana z czytnikami Towitoko, Kobil, SCM, Orga, Omnikey i
-Reiner-SCT. 
+Reiner-SCT.
 
 %package devel
 Summary:	Header files for libchipcard
