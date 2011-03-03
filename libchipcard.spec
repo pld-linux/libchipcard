@@ -1,15 +1,11 @@
 # TODO:
 # - revise split (e.g. which data should go to -tools)
 #
-# Conditional build:
-%bcond_without	sysfs	# don't use sysfs to scan for ttyUSB
-%bcond_without	hal	# don't use hal
-#
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
 Version:	5.0.0
-Release:	4
+Release:	5
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 # http://www2.aquamaniac.de/sites/download/packages.php
@@ -25,13 +21,6 @@ BuildRequires:	libtool
 BuildRequires:	pcsc-lite-devel >= 1.6.2
 BuildRequires:	pkgconfig
 BuildRequires:	which
-%if %{with hal}
-BuildRequires:	hal-devel >= 0.5.0
-%else
-%if %{with sysfs}
-BuildRequires:	sysfsutils-devel >= 1.3.0-3
-%endif
-%endif
 Obsoletes:	libchipcard-static
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -58,13 +47,6 @@ Summary(pl.UTF-8):	Pliki nagłówkowe libchipcard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	gwenhywfar-devel >= 3.0.0
-%if %{with hal}
-Requires:	hal-devel >= 0.5.0
-%else
-%if %{with sysfs}
-Requires:	sysfsutils-devel >= 1.3.0-3
-%endif
-%endif
 
 %description devel
 This package contains libchipcard-config and header files for writing
@@ -105,8 +87,7 @@ lokalnych czytników kart.
 %{__automake}
 %configure \
 	--disable-static \
-	--with-pcsc-libs=%{_libdir} \
-	%{!?with_sysfs:ac_cv_header_sysfs_libsysfs_h=no}
+	--with-pcsc-libs=%{_libdir}
 
 %{__make}
 
@@ -117,9 +98,10 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 	initscriptdir=/etc/rc.d/init.d
 
-rm -f $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf{.default,}
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf.example
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la \
+	$RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf.example \
+	$RPM_BUILD_ROOT%{_libdir}/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -153,7 +135,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/chipcard-config
 %attr(755,root,root) %{_libdir}/libchipcard.so
-%{_libdir}/libchipcard.la
 %{_includedir}/libchipcard5
 %{_aclocaldir}/chipcard.m4
 
