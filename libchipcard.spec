@@ -14,14 +14,17 @@ Source0:	%{name}-%{version}.tar.gz
 Patch0:		%{name}-visibility.patch
 Patch1:		%{name}-pcsc.patch
 URL:		http://www.libchipcard.de/
-BuildRequires:	autoconf >= 2.59
+BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
-BuildRequires:	gwenhywfar-devel >= 3.5.0
+BuildRequires:	gwenhywfar-devel >= 4.0.0
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	pcsc-lite-devel >= 1.6.2
 BuildRequires:	pkgconfig
 BuildRequires:	which
+BuildRequires:	zlib-devel
 Obsoletes:	libchipcard-static
+Requires:	gwenhywfar >= 4.0.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -46,7 +49,9 @@ Summary:	Header files for libchipcard
 Summary(pl.UTF-8):	Pliki nagłówkowe libchipcard
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	gwenhywfar-devel >= 3.0.0
+Requires:	gwenhywfar-devel >= 4.0.0
+Requires:	pcsc-lite-devel >= 1.6.2
+Requires:	zlib-devel
 
 %description devel
 This package contains libchipcard-config and header files for writing
@@ -87,6 +92,7 @@ lokalnych czytników kart.
 %{__automake}
 %configure \
 	--disable-static \
+	--with-init-script-dir=/etc/rc.d/init.d \
 	--with-pcsc-libs=%{_libdir}
 
 %{__make}
@@ -95,8 +101,7 @@ lokalnych czytników kart.
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	initscriptdir=/etc/rc.d/init.d
+	DESTDIR=$RPM_BUILD_ROOT
 
 mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf{.default,}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la \
