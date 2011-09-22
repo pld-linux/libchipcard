@@ -4,15 +4,14 @@
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	5.0.0
-Release:	5
+Version:	5.0.2
+Release:	1
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 # http://www2.aquamaniac.de/sites/download/packages.php
 Source0:	%{name}-%{version}.tar.gz
-# Source0-md5:	9e1ae41016c894be30021a7e9b820680
+# Source0-md5:	3988200f784f9d9b155bd32b94534d27
 Patch0:		%{name}-visibility.patch
-Patch1:		%{name}-pcsc.patch
 URL:		http://www.libchipcard.de/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -23,8 +22,8 @@ BuildRequires:	pcsc-lite-devel >= 1.6.2
 BuildRequires:	pkgconfig
 BuildRequires:	which
 BuildRequires:	zlib-devel
-Obsoletes:	libchipcard-static
 Requires:	gwenhywfar >= 4.0.0
+Obsoletes:	libchipcard-static
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -82,7 +81,6 @@ lokalnych czytników kart.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__libtoolize}
