@@ -1,18 +1,20 @@
 # TODO:
 # - revise split (e.g. which data should go to -tools)
 #
+# Conditional build:
+%bcond_without	static_libs	# static library
+#
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	5.0.2
-Release:	2
+Version:	5.0.4
+Release:	1
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
-# http://www2.aquamaniac.de/sites/download/packages.php
-Source0:	%{name}-%{version}.tar.gz
-# Source0-md5:	3988200f784f9d9b155bd32b94534d27
-Patch0:		%{name}-visibility.patch
-URL:		http://www.libchipcard.de/
+#Source0Download: https://www.aquamaniac.de/sites/download/packages.php
+Source0:	https://www.aquamaniac.de/sites/download/download.php?package=02&release=200&file=01&dummy=/%{name}-%{version}.tar.gz
+# Source0-md5:	f26766f5e699899ed8b2b6e6b188de73
+URL:		https://www.aquamaniac.de/sites/libchipcard/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	gwenhywfar-devel >= 4.0.0
@@ -23,7 +25,6 @@ BuildRequires:	pkgconfig
 BuildRequires:	which
 BuildRequires:	zlib-devel
 Requires:	gwenhywfar >= 4.0.0
-Obsoletes:	libchipcard-static
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -60,6 +61,18 @@ programs using LibChipCard.
 Ten pakiet zawiera libchipcard-config oraz pliki nagłówkowe do
 tworzenia programów używających LibChipCard.
 
+%package static
+Summary:	Static libchipcard library
+Summary(pl.UTF-8):	Statyczna biblioteka libchipcard
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static libchipcard library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka libchipcard.
+
 %package tools
 Summary:	Terminal tools and daemons for libchipcard
 Summary(pl.UTF-8):	Narzędzia terminalowe i demony dla libchipcard
@@ -80,7 +93,6 @@ lokalnych czytników kart.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -89,7 +101,7 @@ lokalnych czytników kart.
 %{__autoheader}
 %{__automake}
 %configure \
-	--disable-static \
+	%{!?with_static_libs:--disable-static} \
 	--with-init-script-dir=/etc/rc.d/init.d \
 	--with-pcsc-libs=%{_libdir}
 
@@ -101,10 +113,13 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-mv -f $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf{.default,}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la \
-	$RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf.example \
-	$RPM_BUILD_ROOT%{_libdir}/*.la
+%{__mv} $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf{.default,}
+%{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/chipcard/chipcardc.conf.example \
+	$RPM_BUILD_ROOT%{_libdir}/*.la \
+	$RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.la
+%if %{with static_libs}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/gwenhywfar/plugins/*/ct/*.a
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -128,8 +143,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/chipcard/cards/cyberjack_pcsc/*.xml
 %dir %{_datadir}/chipcard/cards/generic_pcsc
 %{_datadir}/chipcard/cards/generic_pcsc/*.xml
-%attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/*.so*
-%{_libdir}/gwenhywfar/plugins/*/ct/*.xml
+%attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/ddvcard.so
+%{_libdir}/gwenhywfar/plugins/*/ct/ddvcard.xml
+%attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/starcoscard.so
+%{_libdir}/gwenhywfar/plugins/*/ct/starcoscard.xml
+%attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/zkacard.so
+%{_libdir}/gwenhywfar/plugins/*/ct/zkacard.xml
 # used by libchipcardc
 %dir %{_sysconfdir}/chipcard
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/chipcard/chipcardc.conf
@@ -140,6 +159,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libchipcard.so
 %{_includedir}/libchipcard5
 %{_aclocaldir}/chipcard.m4
+
+%if %{with static_libs}
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libchipcard.a
+%endif
 
 %files tools
 %defattr(644,root,root,755)
