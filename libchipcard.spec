@@ -8,7 +8,7 @@ Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
 Version:	5.0.4
-Release:	1
+Release:	2
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 #Source0Download: https://www.aquamaniac.de/sites/download/packages.php
