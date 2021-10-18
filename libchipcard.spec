@@ -7,13 +7,13 @@
 Summary:	A library for easy access to smart cards (chipcards)
 Summary(pl.UTF-8):	Biblioteka łatwego dostępu do kart procesorowych
 Name:		libchipcard
-Version:	5.0.4
-Release:	2
+Version:	5.1.6
+Release:	1
 License:	LGPL v2.1 with OpenSSL linking exception
 Group:		Libraries
 #Source0Download: https://www.aquamaniac.de/sites/download/packages.php
-Source0:	https://www.aquamaniac.de/sites/download/download.php?package=02&release=200&file=01&dummy=/%{name}-%{version}.tar.gz
-# Source0-md5:	f26766f5e699899ed8b2b6e6b188de73
+Source0:	https://www.aquamaniac.de/rdm/attachments/download/382/%{name}-%{version}.tar.gz
+# Source0-md5:	d07d5c5e522862e4b89b05c6e2c19be7
 URL:		https://www.aquamaniac.de/sites/libchipcard/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -138,11 +138,15 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/chipcard/apps
 %dir %{_datadir}/chipcard/cards
 %{_datadir}/chipcard/apps/*.xml
+%{_datadir}/chipcard/apps/README
 %{_datadir}/chipcard/cards/*.xml
+%{_datadir}/chipcard/cards/README
 %dir %{_datadir}/chipcard/cards/cyberjack_pcsc
 %{_datadir}/chipcard/cards/cyberjack_pcsc/*.xml
 %dir %{_datadir}/chipcard/cards/generic_pcsc
 %{_datadir}/chipcard/cards/generic_pcsc/*.xml
+%attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/chiptanusb.so
+%{_libdir}/gwenhywfar/plugins/*/ct/chiptanusb.xml
 %attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/ddvcard.so
 %{_libdir}/gwenhywfar/plugins/*/ct/ddvcard.xml
 %attr(755,root,root) %{_libdir}/gwenhywfar/plugins/*/ct/starcoscard.so
@@ -159,6 +163,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libchipcard.so
 %{_includedir}/libchipcard5
 %{_aclocaldir}/chipcard.m4
+%{_pkgconfigdir}/libchipcard-*.pc
 
 %if %{with static_libs}
 %files static
@@ -173,3 +178,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/geldkarte
 %attr(755,root,root) %{_bindir}/kvkcard
 %attr(755,root,root) %{_bindir}/memcard
+%attr(755,root,root) %{_bindir}/usbtan-test
+%attr(755,root,root) %{_bindir}/zkacard-tool
